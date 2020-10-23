@@ -74,7 +74,7 @@ public class Exe8 extends ExerciseImpl {
             String query = "CALL minions_db.udp_increase_age(?)";
             CallableStatement callableStatement = super.accessConnection().prepareCall(query);
             callableStatement.setInt(1, id);
-            callableStatement.execute();
+            callableStatement.executeUpdate();
         }
     }
 }
