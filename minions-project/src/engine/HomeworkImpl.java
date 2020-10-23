@@ -39,8 +39,20 @@ public class HomeworkImpl implements Homework {
             case "5":
                 exe = new Exe5(conn);
                 break;
+            case "6":
+                exe = new Exe6(conn);
+                break;
+            case "7":
+                exe = new Exe7(conn);
+                break;
+            case "8":
+                exe = new Exe8(conn);
+                break;
+            case "9":
+                exe = new Exe9(conn);
+                break;
             default:
-                throw new IllegalStateException("Unexpected value: " + taskNumber);
+                throw new IllegalStateException("Wrong task number: " + taskNumber);
         }
         System.out.println(exe.getName());
         exe.execute();

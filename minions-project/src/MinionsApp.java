@@ -9,7 +9,7 @@ public class MinionsApp {
     public static void main(String[] args) throws SQLException, IOException {
 
         HomeworkImpl homework = new HomeworkImpl
-                (DatabaseConnection.setUpConnection("?????", "?????"));
+                (DatabaseConnection.setUpConnection("????", "????"));
         homework.executeTask();
     }
 }
