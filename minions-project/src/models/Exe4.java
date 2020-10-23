@@ -13,6 +13,8 @@ public class Exe4 extends ExerciseImpl {
     private final String TASK_NAME = "4.Add Minion";
     private final String DESCRIPTION = "Write a program that reads information about a minion and its villain and adds it to the database. In case the town of the minion is not in the database, insert it as well. In case the villain is not present in the database, add him too with default evilness factor of “evil”. Finally, set the new minion to be servant of the villain. Print appropriate messages after each operation – see the examples.";
 
+    private PreparedStatement stmt;
+
     public Exe4(Connection connection) {
         super(connection);
     }
@@ -56,7 +58,7 @@ public class Exe4 extends ExerciseImpl {
 
             String query =
                     "INSERT INTO minions_db.villains(name, evilness_factor) VALUE (?,?)";
-            PreparedStatement stmt = super.accessConnection().prepareStatement(query);
+            stmt = super.accessConnection().prepareStatement(query);
             stmt.setString(1, name);
             stmt.setString(2, "evil");
             stmt.execute();
@@ -72,7 +74,7 @@ public class Exe4 extends ExerciseImpl {
         if (townId < 0) {
 
             String query = "INSERT INTO minions_db.towns(name) VALUE(?)";
-            PreparedStatement stmt = super.accessConnection().prepareStatement(query);
+            stmt = super.accessConnection().prepareStatement(query);
             stmt.setString(1, name);
             stmt.execute();
 
@@ -87,7 +89,7 @@ public class Exe4 extends ExerciseImpl {
         String query =
                 "INSERT INTO minions_db.minions (name, age, town_id) VALUE (?,?,?)";
 
-        PreparedStatement stmt = super.accessConnection().prepareStatement(query);
+        stmt = super.accessConnection().prepareStatement(query);
         stmt.setString(1, minionsName);
         stmt.setInt(2, age);
         stmt.setInt(3, townId);
@@ -104,7 +106,7 @@ public class Exe4 extends ExerciseImpl {
         String query =
                 "INSERT INTO minions_db.minions_villains VALUES (?,?)";
 
-        PreparedStatement stmt = super.accessConnection().prepareStatement(query);
+        stmt = super.accessConnection().prepareStatement(query);
         stmt.setInt(1, minionsId);
         stmt.setInt(2, villainId);
 

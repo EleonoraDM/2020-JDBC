@@ -14,6 +14,9 @@ public class Exe3 extends ExerciseImpl {
     private final String TASK_NAME = "3.Get Minion Names";
     private final String DESCRIPTION = "Write a program that prints on the console all minion names and their age for given villain id. For the output, use the formats given in the examples.";
 
+    private PreparedStatement stmt;
+    private ResultSet resultSet;
+
     public Exe3(Connection connection) {
         super(connection);
     }
@@ -50,9 +53,9 @@ public class Exe3 extends ExerciseImpl {
                         "         JOIN minions_db.minions_villains mv ON m.id = mv.minion_id\n" +
                         "WHERE mv.villain_id = ?";
 
-        PreparedStatement stmt = super.accessConnection().prepareStatement(query);
+        stmt = super.accessConnection().prepareStatement(query);
         stmt.setInt(1, villainId);
-        ResultSet resultSet = stmt.executeQuery();
+        resultSet = stmt.executeQuery();
 
         int counter = 0;
 
