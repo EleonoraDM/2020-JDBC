@@ -1,13 +1,23 @@
 package entities;
 
+import orm.Column;
+import orm.Entity;
+import orm.Id;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity(name = "users")
 public class User {
+    @Id
     private int id;
+    @Column(name = "username")
     private String username;
+    @Column(name = "password")
     private String password;
+    @Column(name = "age")
     private int age;
+    @Column(name = "registration_date")
     private LocalDate registrationDate;
 
     public User() {
