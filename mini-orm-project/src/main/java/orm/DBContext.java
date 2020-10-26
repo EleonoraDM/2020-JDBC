@@ -1,6 +1,6 @@
 package orm;
 
-public interface DBContext<E> {
+public interface DbContext<E> {
 
     boolean persist(E entity);
 
