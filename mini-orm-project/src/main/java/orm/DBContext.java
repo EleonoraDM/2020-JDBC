@@ -1,5 +1,6 @@
 package orm;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -7,12 +8,12 @@ public interface DbContext<E> {
 
     void persist(E entity) throws IllegalAccessException, SQLException;
 
-    List<E> find(Class<E> table , String where, Object... values);
+    List<E> find(Class<E> table , String whereClause, Object... values);
 
-    E findFirst(Class<E> table, String where, Object... values);
+    String findFirst(Class<E> table, String whereClause, Object... values) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
-    E findById(Class<E> table, int id);
+    String findById(Class<E> table, int id) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException;
 
-    int delete(Class<E> table, int id);
+    void delete(Class<E> table, int id) throws SQLException;
 
 }
