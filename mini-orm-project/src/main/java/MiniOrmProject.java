@@ -14,9 +14,14 @@ public class MiniOrmProject {
         EntityManager<User> manager = new EntityManager<>
                 (Connector.accessConnection());
 
-        System.out.println("Connected successfully!");
+        //User test = new User("MED", "MED", 26, LocalDate.now());
+        User test = new User();
+        test.setId(1);
+        test.setUsername("MED");
+        test.setPassword("!!!");
+        test.setAge(26);
+        test.setRegistrationDate(LocalDate.now());
 
-        User test = new User("MED", "MED", 26, LocalDate.now());
         manager.persist(test);
     }
 }

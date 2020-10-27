@@ -5,28 +5,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class EntityManager<E> implements DbContext<E> {
     private static final String INSERT_QUERY = "INSERT INTO %s (%s) VALUE (%s);";
+    private static final String UPDATE_QUERY = "UPDATE %s SET %s WHERE %s;";
+    private static final String DELETE_QUERY = "DELETE FROM %s WHERE %s;";
+    private static final String SELECT_STAR_FROM = "SELECT * FROM   ";
+
 
     private Connection connection;
 
     public EntityManager(Connection connection) {
         this.connection = connection;
-    }
-
-    private Field getId(Class entity) {
-        Field[] fields = entity.getDeclaredFields();
-        Field idField = Arrays.stream(fields).
-                filter(field -> field.isAnnotationPresent(Id.class))
-                .findFirst().
-                        orElseThrow(() -> new UnsupportedOperationException("Entity does not have primary key!"));
-
-        return idField;
     }
 
     @Override
@@ -40,9 +31,34 @@ public class EntityManager<E> implements DbContext<E> {
                 this.doUpdate(entity, primary);
     }
 
-    private boolean doUpdate(E entity, Field primary) {
+    private boolean doUpdate(E entity, Field primary) throws IllegalAccessException, SQLException {
+        String tableName = this.getTableName(entity.getClass());
 
-        return false;
+        Map<String, String> fields = collectFieldsWithValues(entity);
+
+        List<String> joinedFields = fieldValuesToString(fields);
+
+        String updateQuery = String.format(UPDATE_QUERY,
+                tableName,
+                String.join(", ", joinedFields),
+                "id = " + primary.get(entity));
+
+        return executeQuery(updateQuery);
+    }
+
+    private List<String> fieldValuesToString(Map<String, String> fields) {
+        StringBuilder builder;
+        List<String> joinedNamesAndValues = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : fields.entrySet()) {
+            builder = new StringBuilder();
+            builder
+                    .append(entry.getKey())
+                    .append("=")
+                    .append(entry.getValue());
+            joinedNamesAndValues.add(builder.toString());
+        }
+        return joinedNamesAndValues;
     }
 
     private boolean doInsert(E entity, Field primary) throws SQLException {
@@ -89,6 +105,16 @@ public class EntityManager<E> implements DbContext<E> {
         }
     }
 
+    private Field getId(Class entity) {
+        Field[] fields = entity.getDeclaredFields();
+        Field idField = Arrays.stream(fields).
+                filter(field -> field.isAnnotationPresent(Id.class))
+                .findFirst().
+                        orElseThrow(() -> new UnsupportedOperationException("Entity does not have primary key!"));
+
+        return idField;
+    }
+
     private String getTableName(Class<?> entity) {
         return entity.isAnnotationPresent(Entity.class)
                 ? entity.getAnnotation(Entity.class).name()
@@ -97,21 +123,27 @@ public class EntityManager<E> implements DbContext<E> {
 
     @Override
     public Iterable<E> find(Class<E> table) {
+        //TODO Implementation
         return null;
     }
 
     @Override
     public Iterable<E> find(Class<E> table, String where) {
+        //TODO Implementation
         return null;
     }
 
     @Override
     public E findFirst(Class<E> table) {
+        //TODO Implementation
         return null;
     }
 
     @Override
     public E findFirst(Class<E> table, String where) {
+        //TODO Implementation
         return null;
     }
+
+
 }

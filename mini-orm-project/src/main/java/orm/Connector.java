@@ -11,13 +11,20 @@ public class Connector {
     private static Connection connection;
 
 
-    public static void setUpConnection(String username, String password, String dbName) throws SQLException {
+    public static void setUpConnection(String username, String password, String dbName) {
 
-        Properties props = new Properties();
-        props.setProperty("user", username);
-        props.setProperty("password", password);
+        try {
+            Properties props = new Properties();
+            props.setProperty("user", username);
+            props.setProperty("password", password);
 
-        connection = DriverManager.getConnection(DB_URL + dbName, props);
+            connection = DriverManager.getConnection(DB_URL + dbName, props);
+            System.out.println("Connected successfully!");
+        } catch (SQLException e) {
+            System.out.println("Missing credentials!!!");
+            e.printStackTrace();
+        }
+
     }
 
     public static Connection accessConnection() {
