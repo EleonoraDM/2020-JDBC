@@ -1,8 +1,8 @@
 package entities;
 
-import orm.Column;
-import orm.Entity;
-import orm.Id;
+import orm.annotations.Column;
+import orm.annotations.Entity;
+import orm.annotations.Id;
 
 import java.time.LocalDate;
 import java.util.Objects;

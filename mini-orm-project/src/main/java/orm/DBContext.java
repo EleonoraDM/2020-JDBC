@@ -1,17 +1,18 @@
 package orm;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface DbContext<E> {
 
-    boolean persist(E entity) throws IllegalAccessException, SQLException;
+    void persist(E entity) throws IllegalAccessException, SQLException;
 
-    Iterable<E> find(Class<E> table);
+    List<E> find(Class<E> table , String where, Object... values);
 
-    Iterable<E> find(Class<E> table, String where);
+    E findFirst(Class<E> table, String where, Object... values);
 
-    E findFirst(Class<E> table);
+    E findById(Class<E> table, int id);
 
-    E findFirst(Class<E> table, String where);
+    int delete(Class<E> table, int id);
 
 }

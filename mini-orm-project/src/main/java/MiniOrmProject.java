@@ -6,22 +6,30 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class MiniOrmProject {
-    public static void main(String[] args) throws SQLException, IllegalAccessException {
+    public static void main(String[] args) throws IllegalAccessException {
 
-        Connector.setUpConnection
-                ("?????", "?????", "fsd");
+        try {
+            Connector.setUpConnection
+                    ("?????", "?????", "fsd");
+            System.out.println("Connected successfully!");
 
-        EntityManager<User> manager = new EntityManager<>
-                (Connector.accessConnection());
+            EntityManager<User> manager = new EntityManager<>
+                    (Connector.accessConnection());
 
-        //User test = new User("MED", "MED", 26, LocalDate.now());
-        User test = new User();
-        test.setId(1);
-        test.setUsername("MED");
-        test.setPassword("!!!");
-        test.setAge(26);
-        test.setRegistrationDate(LocalDate.now());
+            User test = new User("OO7", "007", 22, LocalDate.now());
+            manager.persist(test);
 
-        manager.persist(test);
+/*            User test1 = new User();
+            test1.setId(1);
+            test1.setUsername("MED");
+            test1.setPassword("!!!");
+            test1.setAge(27);
+            test1.setRegistrationDate(LocalDate.now());
+            manager.persist(test1);*/
+
+        } catch (SQLException e) {
+            System.out.println("Missing credentials!!!");
+            e.getStackTrace();
+        }
     }
 }
