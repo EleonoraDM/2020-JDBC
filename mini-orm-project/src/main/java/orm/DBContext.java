@@ -8,12 +8,16 @@ public interface DbContext<E> {
 
     void persist(E entity) throws IllegalAccessException, SQLException;
 
-    List<E> find(Class<E> table , String whereClause, Object... values);
+    List<E> find(Class<E> table, String whereClause, Object... values) throws SQLException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException;
 
-    String findFirst(Class<E> table, String whereClause, Object... values) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+    E findFirst(Class<E> table, String whereClause, Object... values) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
-    String findById(Class<E> table, int id) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException;
+    E findById(Class<E> table, int id) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException;
 
     void delete(Class<E> table, int id) throws SQLException;
+
+    void printObjectData(E entity);
+
+    void printMultipleObjectsData(List<E> objects);
 
 }

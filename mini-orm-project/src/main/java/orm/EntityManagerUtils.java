@@ -13,6 +13,23 @@ import java.util.*;
 
 class EntityManagerUtils {
 
+
+    static void setInputParameter(PreparedStatement stmt, Object[] values) throws SQLException {
+        for (int i = 0; i < values.length; i++) {
+
+            switch (values[i].getClass().getSimpleName()) {
+                case "Integer":
+                    stmt.setInt(i+1, Integer.parseInt(values[i].toString()));
+                    break;
+                case "Double":
+                    stmt.setDouble(i+1, Double.parseDouble(values[i].toString()));
+                    break;
+                default:
+                    stmt.setString(i+1, values[i].toString());
+            }
+        }
+    }
+
     static List<String> fieldValuesToString(Map<String, String> fields) {
         StringBuilder builder;
         List<String> joinedNamesAndValues = new ArrayList<>();
@@ -58,7 +75,7 @@ class EntityManagerUtils {
         }
     }
 
-    static Field getId(Class entity) {
+    static Field getIdField(Class entity) {
         Field[] fields = entity.getDeclaredFields();
         Field idField = Arrays.stream(fields).
                 filter(field -> field.isAnnotationPresent(Id.class))

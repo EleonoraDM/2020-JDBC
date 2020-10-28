@@ -1,9 +1,7 @@
 package orm;
 
-import entities.User;
 import orm.annotations.Entity;
 
-import javax.swing.plaf.synth.SynthRadioButtonMenuItemUI;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -11,10 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class EntityManager<E> implements DbContext<E> {
     private static final String INSERT_QUERY = "INSERT INTO %s (%s) VALUE (%s);";
@@ -30,27 +28,45 @@ public class EntityManager<E> implements DbContext<E> {
 
     @Override
     public void persist(E entity) throws IllegalAccessException, SQLException {
-        Field primary = EntityManagerUtils.getId(entity.getClass());
+        Field primary = EntityManagerUtils.getIdField(entity.getClass());
         primary.setAccessible(true);
         Object idValue = primary.get(entity);
 
         if ((idValue == null || ((int) idValue) <= 0)) {
-            this.doInsert(entity, primary);
+            this.doInsert(entity);
         } else {
             this.doUpdate(entity, primary);
         }
     }
 
     @Override
-    public List<E> find(Class<E> table, String whereClause, Object... values) {
-        //TODO Implementation!!!
-        return null;
+    public List<E> find(Class<E> table, String whereClause, Object... values) throws SQLException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        String tableName = EntityManagerUtils.getTableName(table);
+        List<E> allMatches = new ArrayList<>();
+        E entity;
+
+        if (table.isAnnotationPresent(Entity.class)) {
+            String query =
+                    SELECT_STAR_FROM + tableName +
+                            " WHERE " + whereClause.substring(0, whereClause.indexOf("?") + 1)
+                            + " AND " + whereClause.substring(whereClause.indexOf("?") + 1);
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            EntityManagerUtils.setInputParameter(stmt, values);
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                entity = fillEntity(table, resultSet);
+                allMatches.add(entity);
+            }
+        }
+        return allMatches;
     }
 
     @Override
-    public String findFirst(Class<E> table, String whereClause, Object... values) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public E findFirst(Class<E> table, String whereClause, Object... values) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         String tableName = EntityManagerUtils.getTableName(table);
-        String result = null;
+
+        E entity = null;
 
         if (table.isAnnotationPresent(Entity.class)) {
 
@@ -58,46 +74,19 @@ public class EntityManager<E> implements DbContext<E> {
                     SELECT_STAR_FROM + tableName +
                             " WHERE " + whereClause + " LIMIT 1;";
             PreparedStatement stmt = connection.prepareStatement(query);
-            setInputParameter(stmt, values);
+            EntityManagerUtils.setInputParameter(stmt, values);
             ResultSet resultSet = stmt.executeQuery();
             resultSet.next();
 
-            result = fillEntity(table, resultSet);
+            entity = fillEntity(table, resultSet);
         }
-        return result;
+        return entity;
     }
 
-    private void setInputParameter(PreparedStatement stmt, Object[] values) throws SQLException {
-        for (Object value : values) {
-            switch (value.getClass().getSimpleName()) {
-                case "Integer":
-                    stmt.setInt(1,Integer.parseInt(value.toString()));
-                    break;
-                case "Double":
-                    stmt.setDouble(1,Double.parseDouble(value.toString()));
-                    break;
-                default: stmt.setString(1, value.toString());
-            }
-        }
-    }
 
     @Override
-    public String findById(Class<E> table, int id) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException {
-        System.out.printf("User with id=%d: ", id);
+    public E findById(Class<E> table, int id) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException {
         return findFirst(table, "id = ?", id);
-    }
-
-    private String fillEntity(Class<E> table, ResultSet resultSet) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SQLException {
-        String result;
-        E entity = table.getDeclaredConstructor
-                (String.class, String.class, int.class, Date.class)
-                .newInstance(
-                        resultSet.getString("username"),
-                        resultSet.getString("password"),
-                        resultSet.getInt("age"),
-                        resultSet.getDate("registration_date"));
-        result = entity.toString();
-        return result;
     }
 
     @Override
@@ -108,8 +97,37 @@ public class EntityManager<E> implements DbContext<E> {
         int rows = EntityManagerUtils.executeUpdate(connection, query);
 
         if (rows > 0) {
-            System.out.printf("%d row was deleted for entity with id %d!", rows, id);
+            System.out.printf("%d row was deleted for entity with id %d%n!", rows, id);
+        }else {
+            System.out.printf("User with id %d does not exist at the DB!%n", id);
         }
+    }
+
+    @Override
+    public void printObjectData(E entity) {
+        System.out.println(entity.toString());
+    }
+
+    @Override
+    public void printMultipleObjectsData(List<E> objects) {
+        objects.stream().map(Objects::toString).forEach(System.out::println);
+    }
+
+    private E fillEntity(Class<E> table, ResultSet resultSet) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SQLException {
+
+        E entity = table.getDeclaredConstructor
+                (String.class, String.class, int.class, LocalDate.class)
+                .newInstance(
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getInt("age"),
+                        resultSet.getDate("registration_date").toLocalDate());
+
+        Field idField = EntityManagerUtils.getIdField(table);
+        idField.setAccessible(true);
+        idField.set(entity, resultSet.getInt("id"));
+
+        return entity;
     }
 
     private void doUpdate(Object entity, Field primary) throws IllegalAccessException, SQLException {
@@ -128,7 +146,7 @@ public class EntityManager<E> implements DbContext<E> {
         System.out.println("1 row was updated!");
     }
 
-    private void doInsert(Object entity, Field primary) throws SQLException {
+    private void doInsert(Object entity) throws SQLException {
         String tableName = EntityManagerUtils.getTableName(entity.getClass());
 
         Map<String, String> fields = EntityManagerUtils.collectFieldsWithValues(entity);

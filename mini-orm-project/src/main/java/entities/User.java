@@ -5,7 +5,6 @@ import orm.annotations.Entity;
 import orm.annotations.Id;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity(name = "users")
@@ -19,12 +18,12 @@ public class User {
     @Column(name = "age")
     private int age;
     @Column(name = "registration_date")
-    private Date registrationDate;
+    private LocalDate registrationDate = LocalDate.now();
 
     public User() {
     }
 
-    public User(String username, String password, int age, Date registrationDate) {
+    public User(String username, String password, int age, LocalDate registrationDate) {
         this.username = username;
         this.password = password;
         this.age = age;
@@ -63,11 +62,11 @@ public class User {
         this.age = age;
     }
 
-    public Date getRegistrationDate() {
+    public LocalDate getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
+    public void setRegistrationDate(LocalDate registrationDate) {
         this.registrationDate = registrationDate;
     }
 
@@ -86,11 +85,13 @@ public class User {
 
     @Override
     public String toString() {
-        return
-                "username='" + username + '\'' +
-                        ", password='" + password + '\'' +
-                        ", age=" + age +
-                        ", registrationDate=" + registrationDate;
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                ", registrationDate=" + registrationDate +
+                '}';
     }
 }
 
