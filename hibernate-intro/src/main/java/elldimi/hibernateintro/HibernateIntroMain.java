@@ -6,6 +6,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 public class HibernateIntroMain {
     public static void main(String[] args) {
         //1.Create Hibernate config
@@ -28,8 +32,7 @@ public class HibernateIntroMain {
         session.beginTransaction();
         session.save(student);
         session.getTransaction().commit();
-
-        /*n----------------------------------------------------------------------------------------------*/
+        System.out.println("5/*n----------------------------------------------------------------------------------------------*/");
 
         //5.Read entity by id = 1:
         session.beginTransaction();
@@ -43,8 +46,8 @@ public class HibernateIntroMain {
         Student student2 = session.byId(Student.class).load(1L);
         session.getTransaction().commit();
         System.out.println(student2.toString());
+        System.out.println("6/*n----------------------------------------------------------------------------------------------*/");
 
-        /*n----------------------------------------------------------------------------------------------*/
         //6.List all students using HQL:
         session.beginTransaction();
         session.createQuery("FROM Student", Student.class)
@@ -52,7 +55,7 @@ public class HibernateIntroMain {
                 .setMaxResults(10)
                 .stream().forEach(System.out::println);
         session.getTransaction().commit();
-        /*n----------------------------------------------------------------------------------------------*/
+        System.out.println("7/*n----------------------------------------------------------------------------------------------*/");
 
         //7.List student with certain name:
         session.beginTransaction();
@@ -61,13 +64,26 @@ public class HibernateIntroMain {
                 .stream().forEach(System.out::println);
         session.getTransaction().commit();
 
+        System.out.println();
+
         session.beginTransaction();
-        session.createQuery("FROM Student WHERE name = ?", Student.class)
-                .setParameter(0, "John Doe")
+        session.createQuery("FROM Student WHERE name = ?1", Student.class)
+                .setParameter(1, "John Doe")
                 .stream().forEach(System.out::println);
         session.getTransaction().commit();
-        /*n----------------------------------------------------------------------------------------------*/
+        System.out.println("8/*n----------------------------------------------------------------------------------------------*/");
 
+        //8.Type-safe criteria queries:
+        /*For better safety is recommended the usage of Metamodel API -
+        property naming instead of using the string name of the field itself - Student_.*/
+        session.beginTransaction();
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaQuery<Student> query = criteria.createQuery(Student.class);
+        Root<Student> Student_ = query.from(Student.class);
+        query.select(Student_).where(criteria.like(Student_.get("name"), "D%"));
+        session.createQuery(query).getResultList().forEach(System.out::println);
+
+        System.out.println("/*n----------------------------------------------------------------------------------------------*/");
         //CLOSE SESSION!!!
         session.close();
     }
