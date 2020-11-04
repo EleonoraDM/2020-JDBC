@@ -22,6 +22,17 @@ public class Book extends BaseEntity {
     public Book() {
     }
 
+    public Book(Author author, EditionType edition, LocalDate releaseDate, int copies, BigDecimal price, AgeRestriction restriction, String title, Set<Category> categories) {
+        this.author = author;
+        this.edition = edition;
+        this.releaseDate = releaseDate;
+        this.copies = copies;
+        this.price = price;
+        this.restriction = restriction;
+        this.title = title;
+        this.categories = categories;
+    }
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Author getAuthor() {
         return author;

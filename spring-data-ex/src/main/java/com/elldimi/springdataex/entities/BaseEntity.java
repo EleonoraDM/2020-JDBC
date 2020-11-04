@@ -7,6 +7,7 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass // All sub-classes will inherit field Id!
 public abstract class BaseEntity {
+
     private long id;
 
     public BaseEntity() {

@@ -16,6 +16,11 @@ public class Author extends BaseEntity {
     public Author() {
     }
 
+    public Author(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     //"author" is the name of the field at the corresponding class Book!!!
     @OneToMany(mappedBy = "author")
     public Set<Book> getBooks() {
@@ -24,11 +29,6 @@ public class Author extends BaseEntity {
 
     public void setBooks(Set<Book> books) {
         this.books = books;
-    }
-
-    public Author(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
     @Column(name = "first_name")
