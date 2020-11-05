@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -44,19 +45,20 @@ public class BookServiceImpl implements BookService {
 
 
         for (String line : content) {
-            Author author = this.getRandomAuthor();
+
 
             Matcher matcher = Pattern
                     .compile("(^[0-9])\\s([0-9]+/[0-9]+/[0-9]{4})\\s([0-9]+)\\s([0-9]+.?[0-9]+?)\\s([0-9])\\s(.+)")
                     .matcher(line);
             while (matcher.find()) {
+                Author author = this.getRandomAuthor();
+
                 EditionType edition = EditionType.values()[Integer.parseInt(matcher.group(1))];
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
                 LocalDate releaseDate = LocalDate.parse(matcher.group(2), formatter);
 
                 int copies = Integer.parseInt(matcher.group(3));
-
                 BigDecimal price = new BigDecimal(matcher.group(4));
 
                 AgeRestriction restriction = AgeRestriction.values()[Integer.parseInt(matcher.group(5))];
@@ -69,9 +71,13 @@ public class BookServiceImpl implements BookService {
 
                 this.bookRepository.saveAndFlush(book);
             }
-
         }
+    }
 
+    @Override
+    public List<Book> bookSelectionByYearsCriteria() {
+        LocalDate releaseDate = LocalDate.of(2000, 12, 31);
+        return this.bookRepository.findAllByReleaseDateAfter(releaseDate);
     }
 
     private Set<Category> getRandomCategory() {
@@ -83,7 +89,6 @@ public class BookServiceImpl implements BookService {
             int categoryId = random.nextInt(8) + 1;
             result.add(this.categoryService.getById((long) categoryId));
         }
-
         return result;
     }
 

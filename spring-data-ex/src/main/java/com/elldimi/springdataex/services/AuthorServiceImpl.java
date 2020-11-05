@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.elldimi.springdataex.constants.GlobalConstants.AUTHOR_FILE_PATH;
 
@@ -45,5 +46,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Author findById(Long id) {
         return this.authorRepository.getOne(id);
+    }
+
+    @Override
+    public List<Author> findAllAuthorsByBooksCount() {
+        return this.authorRepository.findAuthorByCountOfBooks();
     }
 }
