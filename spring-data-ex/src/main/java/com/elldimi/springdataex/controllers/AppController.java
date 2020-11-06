@@ -1,13 +1,10 @@
 package com.elldimi.springdataex.controllers;
 
-import com.elldimi.springdataex.entities.Book;
 import com.elldimi.springdataex.services.AuthorServiceImpl;
 import com.elldimi.springdataex.services.BookServiceImpl;
 import com.elldimi.springdataex.services.CategoryServiceImpl;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 
 @Controller

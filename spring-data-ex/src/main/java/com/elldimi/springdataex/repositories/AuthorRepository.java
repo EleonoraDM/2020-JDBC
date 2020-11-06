@@ -12,4 +12,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     @Query("SELECT a FROM Author AS a ORDER BY a.books.size DESC")
     List<Author> findAuthorByCountOfBooks();
+
+    @Query()
+    List<Author> findAuthorByBookReleaseDate();
 }

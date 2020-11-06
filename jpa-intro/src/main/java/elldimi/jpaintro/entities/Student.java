@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 /*JPA:
 * 1.Abstract or Concrete TOP LEVEL java class;
