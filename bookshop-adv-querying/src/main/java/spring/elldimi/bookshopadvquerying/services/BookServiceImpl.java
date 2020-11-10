@@ -120,7 +120,29 @@ public class BookServiceImpl implements BookService {
         this.bookRepository
                 .findAllByReleaseDateBefore(releaseDate)
                 .forEach(b -> System.out.printf("|%-30.30s |%-10.10s | %5.2f |%n",
-                        b.getTitle(),b.getEdition(), b.getPrice()));
+                        b.getTitle(), b.getEdition(), b.getPrice()));
+    }
+
+    @Override
+    public void printBooksWhichTitleContains(String substr) {
+        this.bookRepository
+                .findAllByTitleContains(substr)
+                .forEach(b -> System.out.println(b.getTitle()));
+    }
+
+    @Override
+    public void printBooksWhichAuthorsLastNameStartsWith(String str) {
+        this.bookRepository
+                .findBooksWhichAuthorsLastNameStartsWith(str)
+                .forEach(b -> System.out.println(b.getTitle() + " ("
+                        + b.getAuthor().getFirstName() + " "
+                        + b.getAuthor().getLastName() + ")"));
+    }
+
+    @Override
+    public void printCountOfBooksWithTitleLongerThan(int length) {
+        int count = this.bookRepository.findBooksWithTitleLongerThan(length);
+        System.out.printf("There are %d books with longer title than %d symbols", count, length);
     }
 
 

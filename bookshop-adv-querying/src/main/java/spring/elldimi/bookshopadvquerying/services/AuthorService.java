@@ -13,4 +13,8 @@ public interface AuthorService {
     Author findById(Long id);
 
     List<Author> findAllAuthorsByBooksCount();
+
+    void printAuthorsWithFirstNameEndsWith(String letter);
+
+
 }

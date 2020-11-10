@@ -61,13 +61,20 @@ public class AppController implements CommandLineRunner {
         this.bookService.printBooksReleasedBeforeDate("12-04-1992");
 
         //6.	Authors Search
-
+        System.out.println("6--------------------------------------------------------");
+        this.authorService.printAuthorsWithFirstNameEndsWith("e");
 
         //7.	Books Search
+        System.out.println("7--------------------------------------------------------");
+        this.bookService.printBooksWhichTitleContains("sK");
 
         //8.	Book Titles Search
+        System.out.println("8--------------------------------------------------------");
+        this.bookService.printBooksWhichAuthorsLastNameStartsWith("Ric%");
 
         //9.	Count Books
+        System.out.println("9--------------------------------------------------------");
+        this.bookService.printCountOfBooksWithTitleLongerThan(40);
 
         //10.	Total Book Copies
 

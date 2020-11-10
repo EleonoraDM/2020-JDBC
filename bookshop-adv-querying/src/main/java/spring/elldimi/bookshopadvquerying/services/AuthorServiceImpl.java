@@ -52,4 +52,11 @@ public class AuthorServiceImpl implements AuthorService {
     public List<Author> findAllAuthorsByBooksCount() {
         return this.authorRepository.findAuthorByCountOfBooks();
     }
+
+    @Override
+    public void printAuthorsWithFirstNameEndsWith(String letter) {
+        this.authorRepository
+                .findAllByFirstNameEndsWith(letter)
+                .forEach(a -> System.out.println(a.getFirstName() + " " + a.getLastName()));
+    }
 }

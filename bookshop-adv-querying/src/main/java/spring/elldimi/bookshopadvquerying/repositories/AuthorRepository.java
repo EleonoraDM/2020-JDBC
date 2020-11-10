@@ -15,4 +15,12 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
 /*    @Query()
     List<Author> findAuthorByBookReleaseDate();*/
+
+    List<Author> findAllByFirstNameEndsWith(String letter);
+
+    @Query("SELECT a.firstName, a.lastName, count (b.copies) " +
+            "FROM Author AS a " +
+            "JOIN Book AS b" +
+            "")
+    List<Author> countTotalCopiesByAuthor();
 }

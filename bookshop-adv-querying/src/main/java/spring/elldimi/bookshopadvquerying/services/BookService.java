@@ -20,4 +20,10 @@ public interface BookService {
     void printBooksReleasedNotInYear(String year);
 
     void printBooksReleasedBeforeDate(String date);
+
+    void printBooksWhichTitleContains(String substr);
+
+    void printBooksWhichAuthorsLastNameStartsWith(String str);
+
+    void printCountOfBooksWithTitleLongerThan(int length);
 }
