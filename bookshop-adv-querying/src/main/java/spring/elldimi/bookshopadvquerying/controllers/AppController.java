@@ -6,6 +6,7 @@ import spring.elldimi.bookshopadvquerying.services.AuthorServiceImpl;
 import spring.elldimi.bookshopadvquerying.services.BookServiceImpl;
 import spring.elldimi.bookshopadvquerying.services.CategoryServiceImpl;
 
+import javax.transaction.Transactional;
 
 @Controller
 public class AppController implements CommandLineRunner {
@@ -83,6 +84,27 @@ public class AppController implements CommandLineRunner {
         //11.	Reduced Book
         System.out.println("11--------------------------------------------------------");
         this.bookService.printBookInfoByGivenTitle("Things Fall Apart");
+
+        //12.	* Increase Book Copies
+        /*Write a program that increases the copies of all books
+          released after a given date
+          with a given number.
+          Print the total amount of book copies that were added.
+         Input
+          •	On the first line – date in the format dd MMM yyyy.
+            If a book is released after that date (exclusively),
+            increase its book copies with the provided number from the second line of the input.
+          •	On the second line – number of book copies each book should be increased with.
+         Output
+          •	Total number of books that was added to the database.
+*/
+        System.out.println("12--------------------------------------------------------");
+        this.bookService.increaseBookCopies("01-01-2014", 100);
+
+
+        //13.	* Remove Books
+
+        //14.	* Stored Procedure
     }
 
 

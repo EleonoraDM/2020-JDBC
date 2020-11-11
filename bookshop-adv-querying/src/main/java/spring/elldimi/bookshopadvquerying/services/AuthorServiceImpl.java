@@ -77,8 +77,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .forEachOrdered(x -> reverseSortedMap.put(x.getKey(), x.getValue()));
 
-        reverseSortedMap.entrySet()
-                .forEach(entry-> System.out.printf("%s - %d%n", entry.getKey(), entry.getValue()));
+        reverseSortedMap.forEach((key, value) -> System.out.printf("%s - %d%n", key, value));
     }
 
 }

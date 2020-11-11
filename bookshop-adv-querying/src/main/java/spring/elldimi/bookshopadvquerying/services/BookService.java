@@ -28,4 +28,6 @@ public interface BookService {
     void printCountOfBooksWithTitleLongerThan(int length);
 
     void printBookInfoByGivenTitle(String title);
+
+    void increaseBookCopies(String date, int copies);
 }

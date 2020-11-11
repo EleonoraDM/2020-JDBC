@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import static spring.elldimi.bookshopadvquerying.constants.GlobalConstants.BOOKS_FILE_PATH;
 
 @Service
-@Transactional
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final FileUtil fileUtil;
@@ -77,7 +76,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> bookSelectionByYearsCriteria() {
         LocalDate releaseDate = LocalDate.of(2000, 12, 31);
-        return this.bookRepository.findAllByReleaseDateAfter(releaseDate);
+        return this.bookRepository.findAllByReleaseDateAfterOrderByReleaseDateDesc(releaseDate);
     }
 
     @Override
@@ -154,6 +153,30 @@ public class BookServiceImpl implements BookService {
                 book.getAgeRestriction(),
                 book.getPrice()
         );
+    }
+
+    @Override
+    public void increaseBookCopies(String date, int copies) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate releaseDate = LocalDate.parse(date, formatter);
+
+        System.out.println("BEFORE--------------------------------------------------------------------");
+        this.bookRepository
+                .findAllByReleaseDateAfterOrderByReleaseDateDesc(releaseDate)
+                .forEach(book ->
+                        System.out.printf("|%-30.30s | %10.10s | %6d |%n",
+                                book.getTitle(), book.getReleaseDate(), book.getCopies()));
+
+        System.out.println("AFTER--------------------------------------------------------------------");
+        int rows = this.bookRepository.increaseBookCopiesWithGivenValue(copies, releaseDate);
+
+        this.bookRepository
+                .findAllByReleaseDateAfterOrderByReleaseDateDesc(releaseDate)
+                .forEach(book ->
+                        System.out.printf("|%-30.30s | %10.10s | %6d |%n",
+                                book.getTitle(), book.getReleaseDate(), book.getCopies()));
+
+        System.out.printf("Total count of added copies: %d", rows * copies);
     }
 
 
