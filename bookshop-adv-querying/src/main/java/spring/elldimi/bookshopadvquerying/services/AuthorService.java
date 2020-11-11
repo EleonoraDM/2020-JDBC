@@ -16,5 +16,7 @@ public interface AuthorService {
 
     void printAuthorsWithFirstNameEndsWith(String letter);
 
+    void listAndOrderAllAuthorsByTotalBookCopies();
+
 
 }

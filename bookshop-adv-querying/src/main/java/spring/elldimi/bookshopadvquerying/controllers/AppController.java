@@ -77,8 +77,12 @@ public class AppController implements CommandLineRunner {
         this.bookService.printCountOfBooksWithTitleLongerThan(40);
 
         //10.	Total Book Copies
+        System.out.println("10--------------------------------------------------------");
+        this.authorService.listAndOrderAllAuthorsByTotalBookCopies();
 
         //11.	Reduced Book
+        System.out.println("11--------------------------------------------------------");
+        this.bookService.printBookInfoByGivenTitle("Things Fall Apart");
     }
 
 

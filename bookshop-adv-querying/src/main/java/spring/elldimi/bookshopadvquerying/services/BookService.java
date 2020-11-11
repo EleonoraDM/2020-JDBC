@@ -26,4 +26,6 @@ public interface BookService {
     void printBooksWhichAuthorsLastNameStartsWith(String str);
 
     void printCountOfBooksWithTitleLongerThan(int length);
+
+    void printBookInfoByGivenTitle(String title);
 }

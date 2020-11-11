@@ -2,12 +2,12 @@ package spring.elldimi.bookshopadvquerying.services;
 
 import org.springframework.stereotype.Service;
 import spring.elldimi.bookshopadvquerying.entities.Author;
+import spring.elldimi.bookshopadvquerying.entities.Book;
 import spring.elldimi.bookshopadvquerying.repositories.AuthorRepository;
 import spring.elldimi.bookshopadvquerying.utills.FileUtil;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static spring.elldimi.bookshopadvquerying.constants.GlobalConstants.AUTHOR_FILE_PATH;
 
@@ -59,4 +59,26 @@ public class AuthorServiceImpl implements AuthorService {
                 .findAllByFirstNameEndsWith(letter)
                 .forEach(a -> System.out.println(a.getFirstName() + " " + a.getLastName()));
     }
+
+    @Override
+    public void listAndOrderAllAuthorsByTotalBookCopies() {
+        List<Author> authors = this.authorRepository.findAuthorsBy();
+        HashMap<String, Integer> authorsAndCopies = new HashMap<>();
+
+        for (Author author : authors) {
+            String fullName = author.getFirstName() + " " + author.getLastName();
+            int copies = author.getBooks().stream().mapToInt(Book::getCopies).sum();
+            authorsAndCopies.put(fullName, copies);
+        }
+        LinkedHashMap<String, Integer> reverseSortedMap = new LinkedHashMap<>();
+
+        authorsAndCopies.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .forEachOrdered(x -> reverseSortedMap.put(x.getKey(), x.getValue()));
+
+        reverseSortedMap.entrySet()
+                .forEach(entry-> System.out.printf("%s - %d%n", entry.getKey(), entry.getValue()));
+    }
+
 }

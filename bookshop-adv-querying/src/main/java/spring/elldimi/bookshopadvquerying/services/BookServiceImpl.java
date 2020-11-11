@@ -142,7 +142,18 @@ public class BookServiceImpl implements BookService {
     @Override
     public void printCountOfBooksWithTitleLongerThan(int length) {
         int count = this.bookRepository.findBooksWithTitleLongerThan(length);
-        System.out.printf("There are %d books with longer title than %d symbols", count, length);
+        System.out.printf("There are %d books with longer title than %d symbols%n", count, length);
+    }
+
+    @Override
+    public void printBookInfoByGivenTitle(String title) {
+        Book book = this.bookRepository.findBookByTitle(title);
+        System.out.printf("|%-30.30s |%-7.7s|%-7.7s| %5.2f |%n",
+                title,
+                book.getEdition(),
+                book.getAgeRestriction(),
+                book.getPrice()
+        );
     }
 
 
