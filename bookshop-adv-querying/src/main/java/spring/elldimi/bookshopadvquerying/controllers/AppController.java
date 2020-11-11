@@ -6,8 +6,6 @@ import spring.elldimi.bookshopadvquerying.services.AuthorServiceImpl;
 import spring.elldimi.bookshopadvquerying.services.BookServiceImpl;
 import spring.elldimi.bookshopadvquerying.services.CategoryServiceImpl;
 
-import javax.transaction.Transactional;
-
 @Controller
 public class AppController implements CommandLineRunner {
     private final CategoryServiceImpl categoryService;
@@ -101,10 +99,13 @@ public class AppController implements CommandLineRunner {
         System.out.println("12--------------------------------------------------------");
         this.bookService.increaseBookCopies("01-01-2014", 100);
 
-
         //13.	* Remove Books
+        /*Write a program that removes from the database those books, which copies are lower than a given number. Print the number of books that were deleted from the database.*/
 
         //14.	* Stored Procedure
+        /*14.	* Stored Procedure
+Using Workbench (or other similar tool) create a stored procedure, which receives an author's first and last name and returns the total amount of books the author has written. Then write a program that receives an author's name and prints the total number of books the author has written by using the stored procedure you've just created.
+*/
     }
 
 
